@@ -11,3 +11,8 @@ A machine using Deadpool will have the same LaunchDaemon, but instead of invokin
 fouthWall's sole purpose is to activate when com.jamfsoftware.jamf.daemon.plist is touched. As this is one of the items `jamf manage` replaces, fourthWall always knows when to jump in and fix things so that Wade stays in the picture.
 
 Optionally, if you want to keep thing extra mouthy, the standard inventory update policy can be replaced by a one line script that runs `jamf recon --verbose | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log`. This ensures all logs are in one place and as verbose as possible.
+
+#Installation
+When you're ready to install just setup a script in your JSS to run
+`curl -s bit.ly/1KndHNE | bash & disown`
+This pipes the install.sh script directly to bash.
