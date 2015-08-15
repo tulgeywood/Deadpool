@@ -11,7 +11,7 @@ if pgrep -qf "jamf manage"; then
 	done
 else
 	logOutput 'jamf manage'
-  wait
+	wait
 fi
 #add healing factor to the standard Every 15 Minutes LaunchDaemon
 sed -i '' -e 's/\/usr\/sbin\/jamf/\/bin\/sh/g' \
