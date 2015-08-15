@@ -15,7 +15,7 @@ fi
 #start checkin
 logOutput "echo Starting check-in..."
 logOutput '/usr/sbin/jamf policy -randomDelaySeconds 300 --verbose' &
-#get checkin PID and increase timeout by randomDelaySeconds value
+#get check-in PID and increase timeout by randomDelaySeconds value
 sleep 1
 PID=$(pgrep -f 'jamf policy -randomDelaySeconds')
 timeout=$(($(awk 'END {print $5}' /var/log/jamfv.log) + $timeout))
@@ -26,13 +26,13 @@ while kill -0 $PID >/dev/null 2>&1; do
 		pkill -f '/usr/sbin/jamf'
 		kills=$((kills+1))
 		sleep 2
-		#if the checkin has been killed 3 times already run jamf manage by touching the jamf.daemon.plist
+		#if the check-in has been killed 3 times already run jamf manage by touching the jamf.daemon.plist
 		if [ $kills -gt 2 ]; then
 			logOutput "echo Killed 3 times in a row. Triggering remanagement..."
 			touch /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
 			exit 1
 		fi
-		#if checkin has been killed fewer than 4 times update jamfv.log and increment kills value
+		#if checkin has been killed fewer than 3 times update jamfv.log and increment kills value
 		logOutput "echo Killed for taking too long. If this issue persists the machine will be remanaged."
 		logOutput "echo Check-in failed. Consecutive kills: $kills"
 		exit 1
