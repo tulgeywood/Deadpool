@@ -3,7 +3,7 @@
 logOutput(){
 	$1 | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log
 }
-#prevent script running more than one instance of itself
+#figure out if we need to run `jamf manage`
 if pgrep -qf "jamf manage"; then
 	logOutput "echo jamf manage was run mannually"
 	until ! pgrep -qf "jamf manage"; do
