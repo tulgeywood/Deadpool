@@ -1,6 +1,6 @@
-# JAMF check-ins with healing factor and a mouth!
+# Hangs
 
-It can be very easy to create a policy or script that will accidentally hang your JAMF binary on client machines. Mess up a simple loop and the computer will check-in or update EAs forever. Sadly, JAMF doesn't offer a particuraly robust log for troubleshooting these issues either. Deadpool solves these issue with two lightweight scripts and one additional LaunchDaemon, all the while telling you everything it is doing.
+It is very easy to create a policy or script that will accidentally hang your JAMF binary on client machines. Mess up a simple loop and the computer will check-in or update EAs forever. Sadly, JAMF doesn't offer a particuraly robust log for troubleshooting these issues either making troubleshooting a daunting task at times. Deadpool solves these issue with two lightweight scripts and one additional LaunchDaemon, all the while telling you everything it is doing.
 
 # Standard JAMF check-in process
 A machine enrolled in JAMF has a LaunchDaemon call com.jamfsoftware.task.1.plist. This LaunchDaemon serves one purpose, every 15 minutes (or whatever you set in your JSS) it will run the command `jamf policy -randomDelaySeconds 300`. That's it.
