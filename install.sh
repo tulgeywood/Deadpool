@@ -12,4 +12,4 @@ curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/com.jamfsof
 launchctl load /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
 
 pkill -f '/usr/sbin/jamf'
-jamf manage
+jamf manage | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log
