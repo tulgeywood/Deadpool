@@ -1,4 +1,4 @@
-# Hangs
+# Overview
 
 It is very easy to create a policy or script that will accidentally hang your JAMF binary on client machines. Mess up a simple loop and the computer will check-in or update EAs forever. Sadly, JAMF doesn't offer a particuraly robust log for troubleshooting these issues either making troubleshooting a daunting task at times. Deadpool solves these issue with two lightweight scripts and one additional LaunchDaemon, all the while telling you everything it is doing.
 
