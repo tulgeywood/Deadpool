@@ -13,4 +13,4 @@ fouthWall's sole purpose is to activate when com.jamfsoftware.jamf.daemon.plist 
 Optionally, if you want to keep thing extra mouthy, the standard inventory update policy can be replaced by a one line script that runs `jamf recon --verbose | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log`. This ensures all logs are in one place and as verbose as possible.
 
 #Installation
-When you're ready to install just setup a script in your JSS to run `curl -sL bit.ly/1KndHNE | bash & disown`. This pipes the install.sh script directly to bash.
+When you're ready to install just setup a script in your JSS to run `curl -sL bit.ly/1KndHNE | bash & disown`. You can also run it manually as root. Doing this pipes the install.sh script directly to bash.
