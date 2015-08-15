@@ -1,7 +1,7 @@
 #!/bin/sh
 #logging function
 logOutput(){
-  $1 | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log
+	$1 | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log
 }
 #prevent script running more than one instance of itself
 if pgrep -qf "jamf manage"; then
