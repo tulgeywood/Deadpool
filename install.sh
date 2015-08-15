@@ -11,4 +11,5 @@ curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/com.jamfsof
 -o /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
 launchctl load /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
 
+pkill -f '/usr/sbin/jamf'
 jamf manage
