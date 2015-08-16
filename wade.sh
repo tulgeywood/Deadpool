@@ -3,9 +3,10 @@
 logOutput(){
 	$1 | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log
 }
-#set time based variables
+#set some variables
 startTime=$(date +%s)
 timeout=600
+jamfLocation=$(/usr/bin/which jamf)
 #check previous consecutive kills value
 if tail -n 1 /var/log/jamfv.log | grep -q 'Consecutive kills: '; then
 	kills=$(awk 'END {print $NF}' /var/log/jamfv.log)
@@ -14,7 +15,7 @@ else
 fi
 #start checkin
 logOutput "echo Starting check-in..."
-logOutput '/usr/sbin/jamf policy -randomDelaySeconds 300 --verbose' &
+logOutput "$jamfLocation policy -randomDelaySeconds 300 --verbose" &
 #get check-in PID and increase timeout by randomDelaySeconds value
 sleep 1
 PID=$(pgrep -f 'jamf policy -randomDelaySeconds')
@@ -23,7 +24,7 @@ timeout=$(($(awk 'END {print $5}' /var/log/jamfv.log) + $timeout))
 while kill -0 $PID >/dev/null 2>&1; do
 	if [[ $(($(date +%s) - $startTime)) -gt $timeout ]]; then
 		logOutput "echo Restarting all jamf processes..."
-		pkill -f '/usr/sbin/jamf'
+		pkill -f "$jamfLocation"
 		kills=$((kills+1))
 		sleep 2
 		#if the check-in has been killed 3 times already run jamf manage by touching the jamf.daemon.plist
