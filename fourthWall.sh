@@ -13,7 +13,7 @@ else
 	logOutput 'jamf manage'
 	wait
 fi
-#add healing factor to the standard Every 15 Minutes LaunchDaemon
+#bring Wade back in the standard Every 15 Minutes LaunchDaemon
 sed -i '' -e 's/\/.*\/jamf/\/bin\/sh/g' \
 -e 's/policy/\/Library\/Application Support\/JAMF\/ManagementFrameworkScripts\/wade.sh/g' \
 -e '/randomDelaySeconds/d' \
