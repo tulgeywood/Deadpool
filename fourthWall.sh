@@ -1,7 +1,7 @@
 #!/bin/sh
 #logging function
 logOutput(){
-	$1 | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" '{}' >> /var/log/jamfv.log
+	$1 | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done >> /var/log/jamfv.log
 }
 #figure out if we need to run `jamf manage`
 if pgrep -qf "jamf manage"; then
