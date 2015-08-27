@@ -18,4 +18,4 @@ curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/com.jamfsof
 launchctl load /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
 #restart all jamf processes and let fourthWall introduce Wade to the Every 15 LaunchDaemon
 pkill -f '/usr/sbin/jamf'
-jamf manage | xargs -I{} printf '%s %s\n' "$(date '+%b %d %H:%M:%S')" "{}" >> /var/log/jamfv.log
+jamf manage | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done >> /var/log/jamfv.log
