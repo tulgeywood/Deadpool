@@ -44,6 +44,7 @@ chmod +x /Library/Application\ Support/JAMF/ManagementFrameworkScripts/fourthWal
 curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/com.jamfsoftware.fourthWall.plist \
 -o /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
 launchctl load /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
+<<<<<<< HEAD
 #Let fourthWall introduce Wade to the Every 15 LaunchDaemon
 jamf manage | while read line; do echo $(date '"'"'+%b %d %H:%M:%S'"'"') "$line" ; done >> /var/log/jamfv.log
 /bin/sh -c "sleep 3 && launchctl remove com.jamfsoftware.deadpool.installer" & disown
@@ -52,3 +53,8 @@ rm -f /Library/Application\ Support/JAMF/ManagementFrameworkScripts/installer.sh
 
 chmod +x /Library/Application\ Support/JAMF/ManagementFrameworkScripts/installer.sh
 launchctl load /Library/LaunchDaemons/com.jamfsoftware.deadpool.installer.plist
+=======
+#restart all jamf processes and let fourthWall introduce Wade to the Every 15 LaunchDaemon
+pkill -f '/usr/sbin/jamf'
+jamf manage | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done >> /var/log/jamfv.log
+>>>>>>> origin/master
