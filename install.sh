@@ -52,7 +52,3 @@ rm -f /Library/Application\ Support/JAMF/ManagementFrameworkScripts/installer.sh
 
 chmod +x /Library/Application\ Support/JAMF/ManagementFrameworkScripts/installer.sh
 launchctl load /Library/LaunchDaemons/com.jamfsoftware.deadpool.installer.plist
-
-#restart all jamf processes and let fourthWall introduce Wade to the Every 15 LaunchDaemon
-pkill -f '/usr/sbin/jamf'
-jamf manage | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done >> /var/log/jamfv.log
