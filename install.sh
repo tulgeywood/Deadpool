@@ -18,6 +18,7 @@ echo '#!/bin/sh
 #set some variables
 startTime=$(date +%s)
 timeout=600
+PATH=$PATH':/usr/local/bin'
 jamfLocation=$(/usr/bin/which jamf)
 
 while $(pgrep -qf '"'"'jamf policy'"'"'); do
