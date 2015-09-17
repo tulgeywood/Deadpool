@@ -6,7 +6,7 @@ logOutput(){
 #set some variables
 startTime=$(date +%s)
 timeout=600
-PATH=$PATH':/usr/local/bin/'
+PATH=$PATH':/usr/local/bin'
 jamfLocation=$(/usr/bin/which jamf)
 #check previous consecutive kills value
 if tail -n 1 /var/log/jamfv.log | grep -q 'Consecutive kills: '; then
