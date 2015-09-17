@@ -18,12 +18,12 @@ echo '#!/bin/sh
 #set some variables
 startTime=$(date +%s)
 timeout=600
-PATH=$PATH':/usr/local/bin'
+PATH=$PATH'"'"':/usr/local/bin'"'"'
 jamfLocation=$(/usr/bin/which jamf)
 
 while $(pgrep -qf '"'"'jamf policy'"'"'); do
   if [[ $(($(date +%s) - $startTime)) -gt $timeout ]]; then
-    pkill -f '"'"'/usr/$jamfLocation/jamf'"'"'
+    pkill -f '"'"'$jamfLocation'"'"'
   fi
   echo Waiting...
   sleep 3
