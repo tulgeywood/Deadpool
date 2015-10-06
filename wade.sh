@@ -26,6 +26,8 @@ while kill -0 $PID >/dev/null 2>&1; do
 	if [[ $(($(date +%s) - $startTime)) -gt $timeout ]]; then
 		logOutput "echo Restarting all jamf processes..."
 		pkill -f "$jamfLocation"
+		launchctl unload /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
+		launchctl load /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
 		kills=$((kills+1))
 		sleep 2
 		#if the check-in has been killed 3 times already run jamf manage by touching the jamf.daemon.plist
