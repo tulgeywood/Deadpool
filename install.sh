@@ -24,6 +24,7 @@ jamfLocation=$(/usr/bin/which jamf)
 while $(pgrep -qf '"'"'jamf policy'"'"'); do
   if [[ $(($(date +%s) - $startTime)) -gt $timeout ]]; then
     pkill -f '"'"'$jamfLocation'"'"'
+    launchctl unload /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
   fi
   echo Waiting...
   sleep 3
