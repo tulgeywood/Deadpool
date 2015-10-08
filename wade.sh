@@ -26,6 +26,9 @@ while kill -0 $PID >/dev/null 2>&1; do
 	if [[ $(($(date +%s) - $startTime)) -gt $timeout ]]; then
 		logOutput "echo Restarting all jamf processes..."
 		pkill -f "$jamfLocation"
+		for pid in $(pgrep -f 'jamfAgent'); do
+			launchctl bsexec $pid launchctl unload /Library/LaunchAgents/com.jamfsoftware.jamf.agent.plist
+		done
 		launchctl unload /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
 		launchctl load /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
 		kills=$((kills+1))
