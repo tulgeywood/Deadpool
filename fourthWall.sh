@@ -5,7 +5,7 @@ logOutput(){
 }
 #figure out if we need to run `jamf manage`
 if pgrep -qf "jamf manage"; then
-	logOutput "echo jamf manage was run mannually"
+	logOutput "echo jamf manage was run manually"
 	until ! pgrep -qf "jamf manage"; do
 		sleep 1
 	done
