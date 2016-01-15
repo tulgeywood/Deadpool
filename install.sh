@@ -37,19 +37,11 @@ launchctl unload /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
 rm -rf /Library/Application\ Support/JAMF/ManagementFrameworkScripts/wade.sh
 rm -rf /Library/Application\ Support/JAMF/ManagementFrameworkScripts/fourthWall.sh
 rm -rf /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
-#download and make executable wade.sh
-curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/wade.sh \
--o /Library/Application\ Support/JAMF/ManagementFrameworkScripts/wade.sh
-chmod +x /Library/Application\ Support/JAMF/ManagementFrameworkScripts/wade.sh
-#download and make executable fourthwall.sh
-curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/fourthWall.sh \
--o /Library/Application\ Support/JAMF/ManagementFrameworkScripts/fourthWall.sh
-chmod +x /Library/Application\ Support/JAMF/ManagementFrameworkScripts/fourthWall.sh
-#download and load up the fourthWall LaunchDaemon
-curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/com.jamfsoftware.fourthWall.plist \
--o /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
-launchctl load /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
-#Let fourthWall introduce Wade to the Every 15 LaunchDaemon
+#download and load up the deadpool LaunchDaemon
+curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/single-file-mod/com.tulgeywood.deadpool.plist \
+-o /Library/LaunchDaemons/com.tulgeywood.deadpool.plist
+launchctl load /Library/LaunchDaemons/com.tulgeywood.deadpool.plist
+#Let deadpool introduce himself to the Every 15 LaunchDaemon
 jamf manage | while read line; do echo $(date '"'"'+%b %d %H:%M:%S'"'"') "$line" ; done >> /var/log/jamfv.log
 /bin/sh -c "sleep 3 && launchctl remove com.jamfsoftware.deadpool.installer" & disown
 rm -f /Library/LaunchDaemons/com.jamfsoftware.deadpool.installer.plist
