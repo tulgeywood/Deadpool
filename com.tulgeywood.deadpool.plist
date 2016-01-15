@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.tulgeywood.deadpool</string>
+  <key>ProgramArguments</key>
+    <array>
+      <string>/bin/sh</string>
+      <string>-c</string>
+      <string>redirect=$(awk -F'dict' '/dict/ {print $2; exit}' /Library/LaunchDaemons/com.tulgeywood.deadpool.plist); \
+              awk '/-- REPAIR/ && ! /awk/ {flag=1;next} /REPAIR --/ && ! /awk/ {flag=0} flag' /Library/LaunchDaemons/com.tulgeywood.deadpool.plist | \
+              sed "s/-REDIRECT-/$redirect$redirect/g" | sh
+      </string>
+    </array>
+  <key>WatchPaths</key>
+  <array>
+    <string>/Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist</string>
+  </array>
+	<key>StandardOutPath</key>
+	<string>/var/log/jamfv.log</string>
+</dict>
+</plist>
+<!-- REPAIR
+#logging function
+logOutput(){
+	$1 | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done
+}
+#sneaky angle bracket variables because xml is annoying
+less_t=$(awk -F'dict' '/dict/ {print $1; exit}' /Library/LaunchDaemons/com.tulgeywood.deadpool.plist)
+greater_t=$(awk -F'dict' '/dict/ {print $2; exit}' /Library/LaunchDaemons/com.tulgeywood.deadpool.plist)
+#set path and jamf variable
+PATH=$PATH':/usr/local/bin'
+jamfLocation=$(/usr/bin/which jamf)
+#figure out if we need to run `jamf manage`
+if pgrep -qf "jamf manage"; then
+	logOutput "echo jamf manage was run manually"
+	until ! pgrep -qf "jamf manage"; do
+		sleep 1
+	done
+else
+	logOutput 'jamfLocation manage'
+	wait
+fi
+#bring Wade back into the standard Every 15 Minutes LaunchDaemon
+sed -i '' -e 's/\/.*\/jamf/\/bin\/sh/g' \
+-e 's/policy/-c/g' \
+-e "s/-randomDelaySeconds/awk \'\/-- DEADPOOL\/ \&\& ! \/awk\/ \{flag=1;next\} \/DEADPOOL --\/ \&\& ! \/awk\/ \{flag=0\} flag\' \/Library\/LaunchDaemons\/com.jamfsoftware.task.1.plist | sh/g" \
+-e '/300/d' \
+-e '/\/dict/d' \
+-e '/\/plist/d' /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+echo $less_t'key'$greater_t'StandardOutPath'$less_t'/key'$greater_t -REDIRECT- /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+echo $less_t'string'$greater_t'/var/log/jamfv.log'$less_t'/string'$greater_t -REDIRECT- /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+echo $less_t'/dict'$greater_t -REDIRECT- /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+echo $less_t'/plist'$greater_t -REDIRECT- /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+awk '/-- DEADPOOL/ && ! /awk/ {flag=1} flag' /Library/LaunchDaemons/com.tulgeywood.deadpool.plist -REDIRECT- /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+#reload the LaunchDaemon
+launchctl unload /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+launchctl load /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+logOutput "echo Computer has been remanaged"
+REPAIR -->
+
+<!-- DEADPOOL
+#logging function
+logOutput(){
+	$1 | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done
+}
+#set some variables
+startTime=$(date +%s)
+timeout=600
+PATH=$PATH':/usr/local/bin'
+jamfLocation=$(/usr/bin/which jamf)
+#check previous consecutive kills value
+if tail -n 1 /var/log/jamfv.log | grep -q 'Consecutive kills: '; then
+	kills=$(awk 'END {print $NF}' /var/log/jamfv.log)
+else
+	kills=0
+fi
+#start checkin
+logOutput "echo Starting check-in..."
+logOutput "$jamfLocation policy -randomDelaySeconds 300 -verbose" &
+#get check-in PID and increase timeout by randomDelaySeconds value
+sleep 1
+PID=$(pgrep -f 'jamf policy -randomDelaySeconds')
+timeout=$(($(awk 'END {print $5}' /var/log/jamfv.log) + $timeout))
+#wait until timeout before killing jamf processes
+while kill -0 $PID >/dev/null 2>&1; do
+	if [[ $(($(date +%s) - $startTime)) -gt $timeout ]]; then
+		logOutput "echo Restarting all jamf processes..."
+		pkill -f "$jamfLocation"
+		for pid in $(pgrep -f 'jamfAgent'); do
+			launchctl bsexec $pid launchctl unload /Library/LaunchAgents/com.jamfsoftware.jamf.agent.plist
+		done
+		launchctl unload /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
+		launchctl load /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
+		kills=$((kills+1))
+		sleep 2
+		#if the check-in has been killed 3 times already run jamf manage by touching the jamf.daemon.plist
+		if [ $kills -gt 2 ]; then
+			logOutput "echo Killed 3 times in a row. Triggering remanagement..."
+			touch /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
+			exit 1
+		fi
+		#if checkin has been killed fewer than 3 times update jamfv.log and increment kills value
+		logOutput "echo Killed for taking too long. If this issue persists the machine will be remanaged."
+		logOutput "echo Check-in failed. Consecutive kills: $kills"
+		exit 1
+	else
+		sleep 1
+	fi
+done
+#output consecutive kills number to jamfv.log`
+kills=0
+logOutput "echo Check-in successful. Consecutive kills: $kills"
+exit 0
+DEADPOOL -->
