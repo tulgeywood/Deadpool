@@ -38,7 +38,7 @@ rm -rf /Library/Application\ Support/JAMF/ManagementFrameworkScripts/wade.sh
 rm -rf /Library/Application\ Support/JAMF/ManagementFrameworkScripts/fourthWall.sh
 rm -rf /Library/LaunchDaemons/com.jamfsoftware.fourthWall.plist
 #download and load up the deadpool LaunchDaemon
-curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/single-file-mod/com.tulgeywood.deadpool.plist \
+curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/com.tulgeywood.deadpool.plist \
 -o /Library/LaunchDaemons/com.tulgeywood.deadpool.plist
 launchctl load /Library/LaunchDaemons/com.tulgeywood.deadpool.plist
 #Let deadpool introduce himself to the Every 15 LaunchDaemon
