@@ -33,7 +33,8 @@ if pgrep -qf "jamf manage"; then
 		sleep 1
 	done
 else
-	logOutput 'jamfLocation manage'
+	logOutput $jamfLocation' manage'
+  logOutput 'echo Remanagement complete'
 	wait
 fi
 #bring Wade back into the standard Every 15 Minutes LaunchDaemon
@@ -115,4 +116,5 @@ DEADPOOL '"-"''"-"'>' > /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
 #reload the LaunchDaemon
 launchctl unload /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
 launchctl load /Library/LaunchDaemons/com.jamfsoftware.task.1.plist
+logOutput 'echo Deadpool has healed itself'
 REPAIR -->
