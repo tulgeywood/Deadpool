@@ -90,6 +90,10 @@ while kill -0 $PID >/dev/null 2>&1; do
 		for pid in $(pgrep -f '"'"'jamfAgent'"'"'); do
 			launchctl bsexec $pid launchctl unload /Library/LaunchAgents/com.jamfsoftware.jamf.agent.plist
 		done
+		if $(launchctl list | grep -q 'com.apple.security.FDERecoveryAgent'); then
+			launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
+			pkill -f 'FDERecoveryAgent'
+		fi
 		launchctl unload /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
 		launchctl load /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
 		kills=$((kills+1))
