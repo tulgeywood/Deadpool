@@ -23,6 +23,9 @@ Optionally, if you want to keep things extra mouthy, the standard inventory upda
 
 • Scripting errors that create infinite loops or unchecked wait times.
 
+• General bad policies that don't play nice
+
+What Deadpool can't fix will likely be in the `/var/log/jamfv.log` file for you to investigate when edge cases arrive. Please share those scenarios with me so I can make the tool better.
 
 #Things I will be adding
 Currently Deadpool will not renroll your machine via a quickadd package. I'm working on a few ideas for doing this in a way that I'm happy with. Stay tuned.
