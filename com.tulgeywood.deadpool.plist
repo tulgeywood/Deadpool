@@ -91,6 +91,7 @@ while kill -0 $PID >/dev/null 2>&1; do
 			launchctl bsexec $pid launchctl unload /Library/LaunchAgents/com.jamfsoftware.jamf.agent.plist
 		done
 		if $(launchctl list | grep -q 'com.apple.security.FDERecoveryAgent'); then
+			logOutput "Filevault key redirection probably causing hang. Unloading FDERecoveryAgent and killing process..."
 			launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
 			pkill -f 'FDERecoveryAgent'
 		fi
