@@ -14,6 +14,15 @@ com.tulgeywood.deadpool's sole purpose is to activate when com.jamfsoftware.jamf
 
 Optionally, if you want to keep things extra mouthy, the standard inventory update policy can be replaced by a one line script that runs `jamf recon --verbose | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done >> /var/log/jamfv.log`. This ensures all logs are in one place and as verbose as possible.
 
+#Problems Deadpool handles
+• JAMF Binary hanging on checkin
+• JAMF Agent hanging on checkin
+• FileVault recovery key redirection hanging on checkin
+• Scripting errors that create infinite loops or unchecked wait times
+
+#Things I will be adding
+Currently Deadpool will not renroll your machine via a quickadd package. I'm working on a few ideas for doing this in a way that I'm happy with. Stay tuned.
+
 #LaunchDaemon script internalization
 LaunchDaemons are limited in what shell commands can be baked in. Pretty much anything outside of a one liner ends up going into a script file and the daemon is pointed to it. The problem with this is your script file needs to be maintained along with the daemon and you need to be sure users won't delete, move, or edit it. Anything happens to the script and your daemon will quietly fail forever. With the first iteration of Deadpool, a deleted script could cause check-ins to stop, which I found unacceptable. I spent time mulling this over and finally found a way to put everything inside the daemon itself.
 
