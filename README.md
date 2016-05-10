@@ -15,10 +15,14 @@ com.tulgeywood.deadpool's sole purpose is to activate when com.jamfsoftware.jamf
 Optionally, if you want to keep things extra mouthy, the standard inventory update policy can be replaced by a one line script that runs `jamf recon --verbose | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done >> /var/log/jamfv.log`. This ensures all logs are in one place and as verbose as possible.
 
 #Problems Deadpool handles
-• JAMF Binary hanging on checkin
-• JAMF Agent hanging on checkin
-• FileVault recovery key redirection hanging on checkin
-• Scripting errors that create infinite loops or unchecked wait times
+• JAMF Binary hanging on checkin.
+
+• JAMF Agent hanging on checkin.
+
+• FileVault recovery key redirection hanging on checkin.
+
+• Scripting errors that create infinite loops or unchecked wait times.
+
 
 #Things I will be adding
 Currently Deadpool will not renroll your machine via a quickadd package. I'm working on a few ideas for doing this in a way that I'm happy with. Stay tuned.
