@@ -2,30 +2,32 @@
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-	<dict>
-		<key>Label</key>
-		<string>com.jamfsoftware.deadpool.installer</string>
-		<key>Program</key>
-		<string>/Library/Application Support/JAMF/ManagementFrameworkScripts/installer.sh</string>
-		<key>RunAtLoad</key>
-		<true/>
-    <key>AbandonProcessGroup</key>
-    <true/>
-	</dict>
-</plist>' > /Library/LaunchDaemons/com.jamfsoftware.deadpool.installer.plist
-
-echo '#!/bin/sh
+<dict>
+    <key>Label</key>
+    <string>com.tulgeywood.deadpool.installer</string>
+    <key>ProgramArguments</key>
+        <array>
+            <string>/bin/sh</string>
+            <string>-c</string>
+            <string>awk '"'"'/^.... INSTALL$/ {flag=1;next} /^INSTALL ...$/ {flag=0} flag'"'"' /Library/LaunchDaemons/com.tulgeywood.deadpool.installer.plist | sh</string>
+        </array>
+        <key>RunAtLoad</key>
+            <true/>
+        <key>AbandonProcessGroup</key>
+            <true/>
+</dict>
+</plist>
+<!-- INSTALL
 #set some variables
 startTime=$(date +%s)
 timeout=600
 PATH=$PATH'"'"':/usr/local/bin'"'"'
 jamfLocation=$(/usr/bin/which jamf)
-
 while $(pgrep -qf '"'"'jamf policy'"'"'); do
   if [[ $(($(date +%s) - $startTime)) -gt $timeout ]]; then
     pkill -f '"'"'$jamfLocation'"'"'
     for pid in $(pgrep -f '"'"'jamfAgent'"'"'); do
-    	launchctl bsexec $pid launchctl unload /Library/LaunchAgents/com.jamfsoftware.jamf.agent.plist
+        launchctl bsexec $pid launchctl unload /Library/LaunchAgents/com.jamfsoftware.jamf.agent.plist
     done
     launchctl unload /Library/LaunchDaemons/com.jamfsoftware.jamf.daemon.plist
   fi
@@ -43,9 +45,8 @@ curl -s https://raw.githubusercontent.com/tulgeywood/Deadpool/master/com.tulgeyw
 launchctl load /Library/LaunchDaemons/com.tulgeywood.deadpool.plist
 #Let deadpool introduce himself to the Every 15 LaunchDaemon
 jamf manage | while read line; do echo $(date '"'"'+%b %d %H:%M:%S'"'"') "$line" ; done >> /var/log/jamfv.log
-/bin/sh -c "sleep 3 && launchctl remove com.jamfsoftware.deadpool.installer" & disown
-rm -f /Library/LaunchDaemons/com.jamfsoftware.deadpool.installer.plist
-rm -f /Library/Application\ Support/JAMF/ManagementFrameworkScripts/installer.sh' > /Library/Application\ Support/JAMF/ManagementFrameworkScripts/installer.sh
+/bin/sh -c "sleep 3 && launchctl remove com.tulgeywood.deadpool.installer" & disown
+rm -f /Library/LaunchDaemons/com.tulgeywood.deadpool.installer.plist
+INSTALL -->' > /Library/LaunchDaemons/com.tulgeywood.deadpool.installer.plist
 
-chmod +x /Library/Application\ Support/JAMF/ManagementFrameworkScripts/installer.sh
-launchctl load /Library/LaunchDaemons/com.jamfsoftware.deadpool.installer.plist
+launchctl load /Library/LaunchDaemons/com.tulgeywood.deadpool.installer.plist
