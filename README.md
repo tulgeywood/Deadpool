@@ -14,7 +14,7 @@ com.tulgeywood.deadpool's sole purpose is to activate when com.jamfsoftware.jamf
 
 Optionally, if you want to keep things extra mouthy, the standard inventory update policy can be replaced by a one line script that runs `jamf recon --verbose | while read line; do echo $(date '+%b %d %H:%M:%S') "$line" ; done >> /var/log/jamfv.log`. This ensures all logs are in one place and as verbose as possible.
 
-#Problems Deadpool handles
+# Problems Deadpool handles
 • JAMF Binary hanging on check-in.
 
 • JAMF Agent hanging on check-in.
@@ -27,19 +27,19 @@ Optionally, if you want to keep things extra mouthy, the standard inventory upda
 
 What Deadpool can't fix will likely be in the `/var/log/jamfv.log` file for you to investigate when edge cases arise. Please share those scenarios with me so I can make the tool better.
 
-#Things I will be adding
+# Things I will be adding
 Currently Deadpool will not renroll your machine via a quickadd package. I'm working on a few ideas for doing this in a way that I'm happy with. Stay tuned.
 
-#LaunchDaemon script internalization
+# LaunchDaemon script internalization
 LaunchDaemons are limited in what shell commands can be baked in. Pretty much anything outside of a one liner ends up going into a script file and the daemon is pointed to it. The problem with this is your script file needs to be maintained along with the daemon and you need to be sure users won't delete, move, or edit it. Anything happens to the script and your daemon will quietly fail forever. With the first iteration of Deadpool, a deleted script could cause check-ins to stop, which I found unacceptable. I spent time mulling this over and finally found a way to put everything inside the daemon itself.
 
 The daemon now has the scripts in comments at the end of the plist. Instead of telling the daemon to run a script file I have it run a one liner that uses `awk` to pull the desired script out of the comment section and then send that along to `sh`. The result is one file with everything in it. If that file gets deleted the computer keeps checking in and all is good with the world.
 
-#Installation
+# Installation
 When you're ready to install just setup a script in your JSS to run the install.sh script. This will create a LaunchDaemon that puts everything into place and then deletes itself. It works this way so that the installer will not interrupt any other policies you have running (though if your check-in takes longer than 10 minutes it will just force its way through.) You can also run it manually as root or package the daemon for distribution if you like.
 
-#Overriding the timeout for specific policies
+# Overriding the timeout for specific policies
 There are some circumstances in which you may need to override the 10 minute timeout for a policy. You can do this by creating a new script called `10 Minute Override` in your JSS. Just add the one liner `jamf policy -trigger $4 --verbose & disown`. You can then use the `$4` parameter in a policy to point to the custom trigger of any other policy for which you'd like to ignore the 10 minute timeout. You may notice the output of this policy is not set to be verbose nor to point to the `/var/log/jamfv.log` file. This is because it will be asynchronous to the remaining log output from the check-in and would look awfully messy.
 
-#Deadpool and patch policies
+# Deadpool and patch policies
 Patch policies in Jamf 10 allow for a grace period once the update deadline is passed. This grace period is set as a pause during the checkout process and thus will delay your checkin's completion until that grace period has completed. If your grace period is set to be close to or longer than the interval for Deadpool's kill commands, your patch policy will never install. Either set the grace period to no more than 5 minutes, or increase how long Deadpool waits before killing everything.
