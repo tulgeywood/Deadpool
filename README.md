@@ -40,3 +40,6 @@ When you're ready to install just setup a script in your JSS to run the install.
 
 #Overriding the timeout for specific policies
 There are some circumstances in which you may need to override the 10 minute timeout for a policy. You can do this by creating a new script called `10 Minute Override` in your JSS. Just add the one liner `jamf policy -trigger $4 --verbose & disown`. You can then use the `$4` parameter in a policy to point to the custom trigger of any other policy for which you'd like to ignore the 10 minute timeout. You may notice the output of this policy is not set to be verbose nor to point to the `/var/log/jamfv.log` file. This is because it will be asynchronous to the remaining log output from the check-in and would look awfully messy.
+
+#Deadpool and patch policies
+Patch policies in Jamf 10 allow for a grace period once the update deadline is passed. This grace period is set as a pause during the checkout process and thus will delay your checkin's completion until that grace period has completed. If your grace period is set to be close to or longer than the interval for Deadpool's kill commands, your patch policy will never install. Either set the grace period to no more than 5 minutes, or increase how long Deadpool waits before killing everything.
